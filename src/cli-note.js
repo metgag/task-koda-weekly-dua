@@ -39,7 +39,7 @@ export async function cliNote() {
     }
 }
 
-async function deleteFile(fileList) {
+function fileListLoop(fileList) {
     if (fileList.length < 1) {
         return console.log("\n-- there is no file to delete --");
     }
@@ -47,52 +47,42 @@ async function deleteFile(fileList) {
     for (let i = 0; i < fileList.length; i++) {
         console.log(`${i + 1}. ${path.basename(fileList[i])}`);
     }
-    const askFileNum = await rl.question("file number: ");
+    return rl.question("file number: ");
+}
+
+async function deleteFile(fileList) {
+    const fileNum = await fileListLoop(fileList);
 
     try {
-        await unlink(fileList[askFileNum - 1]);
-        console.log(`\tsuccessfully deleted ${fileList[askFileNum - 1]}`)
-        fileList.splice(askFileNum - 1, 1);
+        await unlink(fileList[fileNum - 1]);
+        console.log(`\tsuccessfully deleted ${fileList[fileNum - 1]}`)
+        fileList.splice(fileNum - 1, 1);
     } catch (err) {
         throw new Error("there was an error");
     }
 }
 
 async function editFile(fileList) {
-    if (fileList.length < 1) {
-        return console.log("\n-- there is no file to edit --");
-    }
+    const fileNum = await fileListLoop(fileList);
 
-    for (let i = 0; i < fileList.length; i++) {
-        console.log(`${i + 1}. ${path.basename(fileList[i])}`);
-    }
-    const askFileNum = await rl.question("file number: ");
-    const readFile = await open(fileList[askFileNum - 1]);
+    const readFile = await open(fileList[fileNum - 1]);
     let temp = "";
     for await (const line of readFile.readLines()) {
         temp = `\n${line}`;
     }
     const inputAppend = await rl.question(`${temp}`);
 
-    const result = appendFile(`${fileList[askFileNum - 1]}`, inputAppend);
+    const result = appendFile(`${fileList[fileNum - 1]}`, inputAppend);
     if (result) {
-        console.log(`\"${inputAppend}\" was appended to ${path.basename(fileList[askFileNum - 1])}`)
+        console.log(`\"${inputAppend}\" was appended to ${path.basename(fileList[fileNum - 1])}`)
     }
 }
 
 async function readFile(fileList) {
-    if (fileList.length < 1) {
-        return console.log("\n-- there is no file to read --");
-    }
-    
-    // read file
-    for (let i = 0; i < fileList.length; i++) {
-        console.log(`${i + 1}. ${path.basename(fileList[i])}`);
-    }
-    const askFileNum = await rl.question("file number: ");
+    const fileNum = await fileListLoop(fileList);
 
-    const readFile = await open(fileList[askFileNum - 1]);
-    console.log(`\n${path.basename(fileList[askFileNum - 1])}`);
+    const readFile = await open(fileList[fileNum - 1]);
+    console.log(`\n${path.basename(fileList[fileNum - 1])}`);
     for await (const line of readFile.readLines()) {
         console.log(`\t${line}`);
     }
