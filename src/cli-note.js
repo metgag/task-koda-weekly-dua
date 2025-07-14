@@ -41,10 +41,6 @@ export async function cliNote() {
 }
 
 function fileListLoop(fileList) {
-    if (fileList.length < 1) {
-        return console.log("\n-- you should write a new file first --");
-    }
-
     for (let i = 0; i < fileList.length; i++) {
         console.log(`${i + 1}. ${path.basename(fileList[i])}`);
     }
@@ -52,6 +48,9 @@ function fileListLoop(fileList) {
 }
 
 async function deleteFile(fileList) {
+    if (fileList.length < 1) {
+        return console.log("\n-- you should write a new file first --");
+    }
     const fileNum = await fileListLoop(fileList);
 
     try {
@@ -64,6 +63,9 @@ async function deleteFile(fileList) {
 }
 
 async function editFile(fileList) {
+    if (fileList.length < 1) {
+        return console.log("\n-- you should write a new file first --");
+    }
     const fileNum = await fileListLoop(fileList);
 
     const readFile = await open(fileList[fileNum - 1]);
@@ -80,6 +82,9 @@ async function editFile(fileList) {
 }
 
 async function readFile(fileList) {
+    if (fileList.length < 1) {
+        return console.log("\n-- you should write a new file first --");
+    }
     const fileNum = await fileListLoop(fileList);
 
     const readFile = await open(fileList[fileNum - 1]);
