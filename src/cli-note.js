@@ -1,3 +1,4 @@
+// no. 5
 import fs, { open, appendFile, unlink } from "node:fs/promises";
 import * as readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
@@ -41,7 +42,7 @@ export async function cliNote() {
 
 function fileListLoop(fileList) {
     if (fileList.length < 1) {
-        return console.log("\n-- there is no file to delete --");
+        return console.log("\n-- you should write a new file first --");
     }
 
     for (let i = 0; i < fileList.length; i++) {
